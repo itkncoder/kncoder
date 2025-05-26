@@ -104,7 +104,7 @@ export function SiteHeader() {
 		<>
 			<header className="fixed left-0 top-0 z-20 w-full translate-y-[-1rem] animate-fade-in border-b opacity-0 backdrop-blur-[12px] [--animation-delay:600ms]">
 				<div className="container flex h-[3.5rem] items-center justify-between">
-					<div className="h-[70px] w-[240px]">
+					<div className="h-[70px] hidden lg:block w-[240px]">
 						<MorphingText texts={["Hello!", "Khatamov", "Nuriddin", "KNCoder"]} className="text-lg text-start scale-[0.4]" />
 					</div>
 
@@ -124,7 +124,7 @@ export function SiteHeader() {
 						</div>
 
 						<div className="flex mr-6 items-center gap-1">
-							<Link className="text-sm" href="https://github.com/itkncoder" target="_blank">
+							<Link className="text-sm" href="https://www.instagram.com/kncoder.me/" target="_blank">
 								Instagram
 							</Link>
 							<InstagramLogoIcon />

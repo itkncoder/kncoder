@@ -23,7 +23,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<body className={cn("min-h-screen bg-[#0c1218] font-sans antialiased", fontSans.variable)}>
+			<body className={cn("min-h-screen bg-[#0c1218] font-sans overflow-x-hidden antialiased", fontSans.variable)}>
 				<ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange>
 					{children}
 					<Toaster />

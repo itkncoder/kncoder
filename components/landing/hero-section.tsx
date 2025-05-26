@@ -21,8 +21,14 @@ export default function HeroSection() {
 				</TextShimmer>
 			</a>
 
-			<div className="relative h-[110px] mt-20 w-full overflow-hidden">
+			<div className="relative hidden lg:block h-[110px] mt-20 w-full overflow-hidden">
 				<VideoText fontSize={"110px"} src="https://cdn.magicui.design/ocean-small.webm">
+					Khatamov Nuriddin
+				</VideoText>
+			</div>
+
+			<div className="relative block lg:hidden h-[110px] mt-5 lg:mt-20 w-full overflow-hidden">
+				<VideoText fontSize={"40px"} src="https://cdn.magicui.design/ocean-small.webm">
 					Khatamov Nuriddin
 				</VideoText>
 			</div>
@@ -40,8 +46,8 @@ export default function HeroSection() {
 					<ArrowRightIcon className="ml-1 size-4 transition-transform duration-300 ease-in-out group-hover:translate-x-1" />
 				</Button>
 			</a>
-			
-			<div ref={ref} className="relative mt-[8rem] animate-fade-up opacity-0 [--animation-delay:400ms] [perspective:2000px] after:absolute after:inset-0 after:z-50 after:[background:linear-gradient(to_top,hsl(var(--background))_30%,transparent)]">
+
+			<div ref={ref} className="relative mt-[3rem] lg:mt-[8rem] animate-fade-up opacity-0 [--animation-delay:400ms] [perspective:2000px] after:absolute after:inset-0 after:z-50 after:[background:linear-gradient(to_top,hsl(var(--background))_30%,transparent)]">
 				<div className={`rounded-xl border border-white/10 bg-white bg-opacity-[0.01] before:absolute before:bottom-1/2 before:left-0 before:top-0 before:h-full before:w-full before:opacity-0 before:[filter:blur(180px)] before:[background-image:linear-gradient(to_bottom,var(--color-one),var(--color-one),transparent_40%)] ${inView ? "before:animate-image-glow" : ""}`}>
 					<BorderBeam size={200} duration={12} delay={11} colorFrom="var(--color-one)" colorTo="var(--color-two)" />
 
