@@ -21,7 +21,7 @@ const GLOBE_CONFIG: COBEOptions = {
 	mapBrightness: 1.5,
 	baseColor: [0, 0.8, 1],
 	markerColor: [1 / 50, 100 / 500, 21 / 100],
-	glowColor: [0.08, 0.08, 0.08],
+	glowColor: [0.065, 0.065, 0.065],
 	markers: [
 		{ location: [14.5995, 120.9842], size: 0.03 },
 		{ location: [19.076, 72.8777], size: 0.1 },
@@ -80,7 +80,13 @@ export function Globe({ className, config = GLOBE_CONFIG }: { className?: string
 			width: width * 2,
 			height: width * 2,
 			onRender: (state) => {
-				if (!pointerInteracting.current) phi += 0.005;
+				if (pointerInteracting.current === null) {
+					phi += 0.005; 
+				} else {
+					phi += pointerInteractionMovement.current / MOVEMENT_DAMPING;
+					pointerInteractionMovement.current *= 0.9; 
+				}
+
 				state.phi = phi + rs.get();
 				state.width = width * 2;
 				state.height = width * 2;
@@ -88,6 +94,7 @@ export function Globe({ className, config = GLOBE_CONFIG }: { className?: string
 		});
 
 		setTimeout(() => (canvasRef.current!.style.opacity = "1"), 0);
+
 		return () => {
 			globe.destroy();
 			window.removeEventListener("resize", onResize);
@@ -100,12 +107,13 @@ export function Globe({ className, config = GLOBE_CONFIG }: { className?: string
 				className={cn("size-full opacity-0 transition-opacity duration-500 [contain:layout_paint_size]")}
 				ref={canvasRef}
 				onPointerDown={(e) => {
-					pointerInteracting.current = e.clientX;
 					updatePointerInteraction(e.clientX);
 				}}
 				onPointerUp={() => updatePointerInteraction(null)}
 				onPointerOut={() => updatePointerInteraction(null)}
-				onMouseMove={(e) => updateMovement(e.clientX)}
+				onPointerMove={(e) => updateMovement(e.clientX)}
+				onTouchStart={(e) => updatePointerInteraction(e.touches[0].clientX)}
+				onTouchEnd={() => updatePointerInteraction(null)}
 				onTouchMove={(e) => e.touches[0] && updateMovement(e.touches[0].clientX)}
 			/>
 		</div>

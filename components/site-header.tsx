@@ -103,78 +103,39 @@ export function SiteHeader() {
 	return (
 		<>
 			<header className="fixed left-0 top-0 z-[9999999] w-full translate-y-[-1rem] animate-fade-in border-b opacity-0 backdrop-blur-[12px] [--animation-delay:600ms]">
-				<div className="container flex h-[3.5rem] items-center justify-between">
+				<div className="container flex h-[3.5rem] items-center justify-between w-full">
 					<div className="h-[70px] hidden lg:block w-[240px]">
 						<MorphingText texts={["Hello!", "Khatamov", "Nuriddin", "KNCoder"]} className="text-lg text-start scale-[0.4]" />
 					</div>
 
-					<div className="ml-auto flex h-full items-center">
-						<div className="flex mr-6 items-center gap-1">
-							<Link className="text-sm" href="https://www.linkedin.com/in/kncoder/" target="_blank">
-								LinkedIn
+					<div className="mx-auto flex h-full w-full lg:justify-end justify-between flex-1 items-center">
+						<div className="flex items-center gap-2">
+							<Link className="flex mr-6 items-center gap-1" href="https://www.linkedin.com/in/kncoder/" target="_blank">
+								<div className="text-sm hidden lg:block">LinkedIn</div>
+								<LinkedInLogoIcon />
 							</Link>
-							<LinkedInLogoIcon />
+
+							<Link className="flex mr-6 items-center gap-1" href="https://github.com/itkncoder" target="_blank">
+								<div className="text-sm hidden lg:block">GitHub</div>
+								<GitHubLogoIcon />
+							</Link>
+
+							<Link href="https://www.instagram.com/kncoder.me/" target="_blank" className="flex mr-6 items-center gap-1">
+								<div className="text-sm hidden lg:block">Instagram</div>
+								<InstagramLogoIcon />
+							</Link>
 						</div>
 
-						<div className="flex mr-6 items-center gap-1">
-							<Link className="text-sm" href="https://github.com/itkncoder" target="_blank">
-								GitHub
-							</Link>
-							<GitHubLogoIcon />
-						</div>
-
-						<div className="flex mr-6 items-center gap-1">
-							<Link className="text-sm" href="https://www.instagram.com/kncoder.me/" target="_blank">
-								Instagram
-							</Link>
-							<InstagramLogoIcon />
-						</div>
-
-						<Link className={cn(buttonVariants({ variant: "default" }), "mr-6 gap-1 text-sm")} href="https://t.me/kncoder" target="_blank">
+						<Link className={cn(buttonVariants({ variant: "default" }), "gap-1 text-sm")} href="https://t.me/kncoder" target="_blank">
 							Telegram
 							<PlaneIcon size={16} />
 						</Link>
 					</div>
-					<button className="ml-6 md:hidden" onClick={() => setHamburgerMenuIsOpen((open) => !open)}>
-						<span className="sr-only">Toggle menu</span>
-						{hamburgerMenuIsOpen ? <XIcon /> : <AlignJustify />}
-					</button>
 				</div>
 			</header>
-			<AnimatePresence>
-				<motion.nav
-					initial="initial"
-					exit="exit"
-					variants={mobilenavbarVariant}
-					animate={hamburgerMenuIsOpen ? "animate" : "exit"}
-					className={cn(`fixed left-0 top-0 z-50 h-screen w-full overflow-auto bg-background/70 backdrop-blur-[12px] `, {
-						"pointer-events-none": !hamburgerMenuIsOpen,
-					})}
-				>
-					<div className="container flex h-[3.5rem] items-center justify-between">
-						<Link className="text-md flex items-center" href="/">
-							Khatamov Nuriddin
-						</Link>
 
-						<button className="ml-6 md:hidden" onClick={() => setHamburgerMenuIsOpen((open) => !open)}>
-							<span className="sr-only">Toggle menu</span>
-							{hamburgerMenuIsOpen ? <XIcon /> : <AlignJustify />}
-						</button>
-					</div>
-					<motion.ul className={`flex flex-col md:flex-row md:items-center uppercase md:normal-case ease-in`} variants={containerVariants} initial="initial" animate={hamburgerMenuIsOpen ? "open" : "exit"}>
-						{menuItem.map((item) => (
-							<motion.li variants={mobileLinkVar} key={item.id} className="border-grey-dark pl-6 py-0.5 border-b md:border-none">
-								<Link className={`hover:text-grey flex h-[var(--navigation-height)] w-full items-center text-xl transition-[color,transform] duration-300 md:translate-y-0 md:text-sm md:transition-colors ${hamburgerMenuIsOpen ? "[&_a]:translate-y-0" : ""}`} href={item.href}>
-									{item.label}
-								</Link>
-							</motion.li>
-						))}
-					</motion.ul>
-				</motion.nav>
-			</AnimatePresence>
-
-			<div>
-				<Globe className="mt-[100px] opacity-55" />
+			<div className="relative z-50">
+				<Globe className="my-[100px] opacity-55" />
 			</div>
 		</>
 	);
