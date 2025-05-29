@@ -134,9 +134,9 @@ export function SiteHeader() {
 				</div>
 			</header>
 
-			<div className="relative z-50">
+			{/* <div className="relative z-50">
 				<Globe className="my-[100px] opacity-55" />
-			</div>
+			</div> */}
 		</>
 	);
 }

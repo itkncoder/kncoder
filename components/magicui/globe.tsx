@@ -2,13 +2,13 @@
 
 import createGlobe, { COBEOptions } from "cobe";
 import { useMotionValue, useSpring } from "motion/react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 
 import { cn } from "@/lib/utils";
 
 const MOVEMENT_DAMPING = 1400;
 
-const GLOBE_CONFIG: COBEOptions = {
+const DEFAULT_CONFIG: COBEOptions = {
 	width: 800,
 	height: 800,
 	onRender: () => {},
@@ -36,85 +36,91 @@ const GLOBE_CONFIG: COBEOptions = {
 	],
 };
 
-export function Globe({ className, config = GLOBE_CONFIG }: { className?: string; config?: COBEOptions }) {
-	let phi = 0;
-	let width = 0;
+export function Globe({
+	className,
+	config = DEFAULT_CONFIG,
+}: {
+	className?: string;
+	config?: COBEOptions;
+}) {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const pointerInteracting = useRef<number | null>(null);
-	const pointerInteractionMovement = useRef(0);
+	const pointerStart = useRef<number | null>(null);
+	const pointerDelta = useRef(0);
+	const globeWidth = useRef(0);
+	const phiRef = useRef(0);
 
-	const r = useMotionValue(0);
-	const rs = useSpring(r, {
+	const motion = useMotionValue(0);
+	const smoothMotion = useSpring(motion, {
 		mass: 1,
 		damping: 30,
 		stiffness: 100,
 	});
 
-	const updatePointerInteraction = (value: number | null) => {
-		pointerInteracting.current = value;
+	const updatePointerStart = useCallback((x: number | null) => {
+		pointerStart.current = x;
 		if (canvasRef.current) {
-			canvasRef.current.style.cursor = value !== null ? "grabbing" : "grab";
+			canvasRef.current.style.cursor = x !== null ? "grabbing" : "grab";
 		}
-	};
+	}, []);
 
-	const updateMovement = (clientX: number) => {
-		if (pointerInteracting.current !== null) {
-			const delta = clientX - pointerInteracting.current;
-			pointerInteractionMovement.current = delta;
-			r.set(r.get() + delta / MOVEMENT_DAMPING);
+	const updatePointerDelta = useCallback((x: number) => {
+		if (pointerStart.current !== null) {
+			const delta = x - pointerStart.current;
+			pointerDelta.current = delta;
+			motion.set(motion.get() + delta / MOVEMENT_DAMPING);
 		}
-	};
+	}, [motion]);
 
 	useEffect(() => {
-		const onResize = () => {
+		const handleResize = () => {
 			if (canvasRef.current) {
-				width = canvasRef.current.offsetWidth;
+				globeWidth.current = canvasRef.current.offsetWidth;
 			}
 		};
 
-		window.addEventListener("resize", onResize);
-		onResize();
+		window.addEventListener("resize", handleResize);
+		handleResize();
 
 		const globe = createGlobe(canvasRef.current!, {
 			...config,
-			width: width * 2,
-			height: width * 2,
+			width: globeWidth.current * 2,
+			height: globeWidth.current * 2,
 			onRender: (state) => {
-				if (pointerInteracting.current === null) {
-					phi += 0.005; 
+				if (pointerStart.current === null) {
+					phiRef.current += 0.005;
 				} else {
-					phi += pointerInteractionMovement.current / MOVEMENT_DAMPING;
-					pointerInteractionMovement.current *= 0.9; 
+					phiRef.current += pointerDelta.current / MOVEMENT_DAMPING;
+					pointerDelta.current *= 0.9;
 				}
 
-				state.phi = phi + rs.get();
-				state.width = width * 2;
-				state.height = width * 2;
+				state.phi = phiRef.current + smoothMotion.get();
+				state.width = globeWidth.current * 2;
+				state.height = globeWidth.current * 2;
 			},
 		});
 
-		setTimeout(() => (canvasRef.current!.style.opacity = "1"), 0);
+		requestAnimationFrame(() => {
+			if (canvasRef.current) canvasRef.current.style.opacity = "1";
+		});
 
 		return () => {
 			globe.destroy();
-			window.removeEventListener("resize", onResize);
+			window.removeEventListener("resize", handleResize);
 		};
-	}, [rs, config]);
+	}, [smoothMotion, config]);
 
 	return (
-		<div className={cn("absolute inset-0 mx-auto aspect-[1/1] w-full max-w-[800px]", className)}>
+		<div className={cn("absolute inset-0 mx-auto aspect-square w-full max-w-[800px]", className)}>
 			<canvas
-				className={cn("size-full opacity-0 transition-opacity duration-500 [contain:layout_paint_size]")}
 				ref={canvasRef}
-				onPointerDown={(e) => {
-					updatePointerInteraction(e.clientX);
-				}}
-				onPointerUp={() => updatePointerInteraction(null)}
-				onPointerOut={() => updatePointerInteraction(null)}
-				onPointerMove={(e) => updateMovement(e.clientX)}
-				onTouchStart={(e) => updatePointerInteraction(e.touches[0].clientX)}
-				onTouchEnd={() => updatePointerInteraction(null)}
-				onTouchMove={(e) => e.touches[0] && updateMovement(e.touches[0].clientX)}
+				className={cn("size-full opacity-0 transition-opacity duration-500 [contain:layout_paint_size]")}
+				onPointerDown={(e) => updatePointerStart(e.clientX)}
+				onPointerUp={() => updatePointerStart(null)}
+				onPointerOut={() => updatePointerStart(null)}
+				onPointerMove={(e) => updatePointerDelta(e.clientX)}
+				onTouchStart={(e) => updatePointerStart(e.touches[0].clientX)}
+				onTouchEnd={() => updatePointerStart(null)}
+				onTouchMove={(e) => e.touches[0] && updatePointerDelta(e.touches[0].clientX)}
 			/>
 		</div>
 	);

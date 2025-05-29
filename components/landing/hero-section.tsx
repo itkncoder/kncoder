@@ -24,13 +24,13 @@ export default function HeroSection() {
 			</a>
 
 			<div className="relative hidden lg:block h-[110px] mt-20 w-full overflow-hidden">
-				<VideoText fontSize={"110px"} src="https://cdn.magicui.design/ocean-small.webm">
+				<VideoText fontSize={"110px"} src="https://videos.pexels.com/video-files/2776522/2776522-uhd_2560_1440_30fps.mp4">
 					Khatamov Nuriddin
 				</VideoText>
 			</div>
 
 			<div className="relative block lg:hidden h-[110px] mt-5 lg:mt-20 w-full overflow-hidden">
-				<VideoText fontSize={"40px"} src="https://cdn.magicui.design/ocean-small.webm">
+				<VideoText fontSize={"40px"} src="https://videos.pexels.com/video-files/2776522/2776522-uhd_2560_1440_30fps.mp4">
 					Khatamov Nuriddin
 				</VideoText>
 			</div>
